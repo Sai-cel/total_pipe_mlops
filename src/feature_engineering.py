@@ -4,11 +4,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import logging
 import yaml
 
-# Ensure the "logs" directory exists
 log_dir = 'logs'
 os.makedirs(log_dir, exist_ok=True)
 
-# logging configuration
 logger = logging.getLogger('feature_engineering')
 logger.setLevel('DEBUG')
 
@@ -25,8 +23,6 @@ file_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
-
-
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Load data from a CSV file."""
@@ -79,9 +75,9 @@ def save_data(df: pd.DataFrame, file_path: str) -> None:
 
 def main():
     try:
-    
-        max_features = 50
-
+        with open("params.yaml", "r") as f:
+            params = yaml.safe_load(f)
+        max_features = params["feature_engineering"]["max_features"]
         train_data = load_data('./data/interim/train_processed.csv')
         test_data = load_data('./data/interim/test_processed.csv')
 

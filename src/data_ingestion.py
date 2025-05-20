@@ -4,11 +4,9 @@ from sklearn.model_selection import train_test_split
 import logging
 import yaml
 
-
 # Ensure the "logs" directory exists
 log_dir = 'logs'
 os.makedirs(log_dir, exist_ok=True)
-
 
 # logging configuration
 logger = logging.getLogger('data_ingestion')
@@ -28,7 +26,6 @@ file_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-
 def load_data(data_url: str) -> pd.DataFrame:
     """Load data from a CSV file."""
     try:
@@ -45,8 +42,8 @@ def load_data(data_url: str) -> pd.DataFrame:
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     """Preprocess the data."""
     try:
-        df.drop(columns = ['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], inplace = True)
-        df.rename(columns = {'v1': 'target', 'v2': 'text'}, inplace = True)
+        df.drop(columns=['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], inplace=True)
+        df.rename(columns={'v1': 'target', 'v2': 'text'}, inplace=True)
         logger.debug('Data preprocessing completed')
         return df
     except KeyError as e:
@@ -70,7 +67,9 @@ def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str)
 
 def main():
     try:
-        test_size = 0.2
+        with open("params.yaml", "r") as f:
+            params = yaml.safe_load(f)
+        test_size = params["data_ingestion"]["test_size"]
         data_path = 'https://raw.githubusercontent.com/vikashishere/Datasets/main/spam.csv'
         df = load_data(data_url=data_path)
         final_df = preprocess_data(df)
